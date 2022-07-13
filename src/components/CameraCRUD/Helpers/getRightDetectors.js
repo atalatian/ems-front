@@ -1,0 +1,4 @@
+const getRightDetectors = (idDetectors, detectors) => {
+
+
+}

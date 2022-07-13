@@ -34,7 +34,7 @@ export default function CustomizedSnackbars() {
 
     const box = useRef();
 
-
+    const maxWidth = 20;
 
     const handleClick = () => {
         setState({ ...state, open: true });
@@ -59,18 +59,19 @@ export default function CustomizedSnackbars() {
                 {
                     (open ? <Box component={motion.div}
                                  ref={(e)=> box.current = e}
-                                 initial = {{ x: 280 }}
+                                 initial = {{ x: maxWidth * 16 + 8 }}
                                  animate={{ x: 0 }}
-                                 exit={{ x: 290, transition: { type: `tween` } }}
+                                 exit={{ x: [0, -20, maxWidth * 16 + 8],
+                                     transition: { type: `tween` } }}
                                  transition={{ type: `spring`, stiffness: 110,}}
                                  sx={{ position: `fixed`,
                                      left: `auto`,
                                      right: 0,
                                      bottom: 0, m: 1, }}>
-                        <Snackbar sx={{ position: `initial` }}
+                        <Snackbar sx={{ position: `initial`, maxWidth: `${maxWidth}rem` }}
                                   open={open} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                                This is a success message!
+                                This is a success message!fffffffffffff
                             </Alert>
                         </Snackbar>
                     </Box> : null)
