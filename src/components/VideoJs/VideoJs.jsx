@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { VideoJsBase } from './VideoJsBase';
 
 const VideoJs = (props) => {
@@ -19,15 +19,19 @@ const VideoJs = (props) => {
     }]
   };
 
+
+
   const handlePlayerReady = (player) => {
     playerRef.current = player;
-    if (setHeight){
-      setHeight(player.el_.getBoundingClientRect().height)
-    }
+    player.on('resize', () => {
+      if (setHeight){
+        setHeight(player.el_.getBoundingClientRect().height)
+      }
 
-    if (setWidth){
-      setWidth(player.el_.getBoundingClientRect().width)
-    }
+      if (setWidth){
+        setWidth(player.el_.getBoundingClientRect().width)
+      }
+    });
   };
 
   return (

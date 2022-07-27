@@ -48,7 +48,7 @@ const TextBoxUpdate = (props) => {
 
     const returnEditButton = () => {
         return(
-            <IconButton onClick={handleEditButton} sx={{ ml: 1 }}>
+            <IconButton onClick={handleEditButton} sx={{ mr: 1 }}>
                 <EditIcon/>
             </IconButton>
         );

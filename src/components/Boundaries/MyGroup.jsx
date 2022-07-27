@@ -1,15 +1,9 @@
 import MyLine from "./MyLine";
 import MyRect from "./MyRect";
-import {Circle, Group, Line, Rect, Text, Transformer} from "react-konva";
-import {useEffect, useRef, useState} from "react";
+import {Group, Transformer} from "react-konva";
+import {useCallback, useEffect, useRef} from "react";
 import {setXY} from "../store/boundariesSlice";
-import {
-    setLineClicked,
-    setLowestPointPosition,
-    setMode,
-    setRectClicked,
-    setSelectedId
-} from "../store/boundariesControlSlice";
+import {setSelectedId} from "../store/boundariesControlSlice";
 
 const MyGroup = (props) => {
 
@@ -17,30 +11,34 @@ const MyGroup = (props) => {
     const trRef = useRef();
 
     const { id, isFinished, points,
-        curMousePos, dispatch, mode, lowestPointPosition,
-        isSelected, stageWidth, stageHeight, x, y} = props;
+        curMousePos, dispatch,
+        isSelected, editable, x, y, type} = props;
 
     useEffect(() => {
-        if (isSelected && mode === 'select') {
+        if (isSelected) {
             trRef.current.nodes([shapeRef.current]);
             trRef.current.getLayer().batchDraw();
         }
 
-    }, [isSelected, mode]);
+    }, [isSelected]);
 
+    useEffect(()=> {
+        if (trRef.current){
+            trRef.current.forceUpdate();
+        }
+    }, [editable, points])
 
     const rectWidth = 7;
-
-
-    const handleClick = () => {
-        dispatch(setSelectedId(id));
-    }
 
     const handleDragEnd = (el) => {
         dispatch(setXY({ id: id, value: [el.target.attrs.x, el.target.attrs.y] }))
     }
 
-    const handleDragMove = (el) => {
+    const handleDragMove = useCallback((el) => {
+
+        const stageWidth = Math.floor(el.target.getStage().attrs.width);
+        const stageHeight = Math.floor(el.target.getStage().attrs.height);
+
         let lowestX = stageWidth;
         let lowestY = stageHeight;
         points.reduce((prev, cur)=>{
@@ -83,13 +81,35 @@ const MyGroup = (props) => {
         if (highestY + el.target.attrs.y >= stageHeight){
             el.target.y(stageHeight - highestY)
         }
-    }
+    }, [points])
 
     const handleMouseDown = (event) => {
         event.cancelBubble = isFinished;
         if (isFinished){
-            dispatch(setMode('select'));
             dispatch(setSelectedId(id));
+        }
+        if (isFinished && editable){
+            event.target.getStage().container().style.cursor = 'move';
+        }
+    }
+
+    const handleMouseEnter = (event) => {
+        if (isFinished){
+            event.target.getStage().container().style.cursor = 'pointer';
+        }
+
+        if (isFinished && editable){
+            event.target.getStage().container().style.cursor = 'move';
+        }
+    }
+
+    const handleMouseLeave = (event) => {
+        if (isFinished){
+            event.target.getStage().container().style.cursor = 'default';
+        }
+
+        if (isFinished && editable){
+            event.target.getStage().container().style.cursor = 'default';
         }
     }
 
@@ -98,8 +118,7 @@ const MyGroup = (props) => {
         points,
         curMousePos,
         rectWidth,
-        dispatch,
-        mode
+        type,
     }
 
     const rectParameters = {
@@ -107,29 +126,45 @@ const MyGroup = (props) => {
         isFinished,
         points,
         dispatch,
-        mode,
         width: rectWidth,
+        editable,
+        groupX: x,
+        groupY: y,
+        type,
     }
 
     return(
         <>
             <Group
                 ref={shapeRef}
-                onDragEnd={mode === 'select' ? handleDragEnd : null}
-                onDragMove={mode === 'select' ? handleDragMove : null}
-                draggable={isFinished}
+                x={x}
+                y={y}
+                onMouseEnter={handleMouseEnter}
+                onMouseOver={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onDragEnd={handleDragEnd}
+                onDragMove={handleDragMove}
+                draggable={editable ? isFinished : null}
                 onMouseDown={handleMouseDown}
             >
                 <MyLine {...lineParameters}/>
-                {
+                {   isFinished && editable &&
+                    points.map((point, index)=>{
+                        return <MyRect {...rectParameters} key={index} point={point} index={index}/>
+                    })
+                }
+                {   !isFinished &&
                     points.map((point, index)=>{
                         return <MyRect {...rectParameters} key={index} point={point} index={index}/>
                     })
                 }
             </Group>
-            {isSelected && mode === 'select' && (
+            {isSelected && (
                 <>
                     <Transformer
+                        padding={10}
+                        borderStroke={`#1565c0`}
+                        borderStrokeWidth={4}
                         ref={trRef}
                         resizeEnabled={false}
                         rotateEnabled={false}

@@ -1,32 +1,20 @@
-import {Layer, Stage} from "react-konva";
+import {Layer, Line, Stage} from "react-konva";
 import {useDispatch, useSelector} from "react-redux";
-import {setIsFinished, setPoints, addShape, editPoints, deleteShape} from "../store/boundariesSlice";
-import {setId, setCurMousePos, setSelectedId, setMode, setStageClicked} from "../store/boundariesControlSlice";
+import {setIsFinished, setPoints, addShape, editPoints, deleteShape, setType} from "../store/boundariesSlice";
+import {setSelectedId} from "../store/boundariesControlSlice";
 import MyLayer from "./MyLayer";
-import shapesObj from "../store/shapesObj";
-import MyGroup from "./MyGroup";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 const MyStage = (props) => {
 
     const { width, height } = props;
-    const id = useSelector(state => state.boundariesControl.id);
-    const mode = useSelector(state => state.boundariesControl.mode);
+    const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted));
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
 
     const dispatch = useDispatch();
     const allShapes = useSelector(state => state.boundaries);
-    const points = useSelector(state => state.boundaries
-        .find((shape)=> shape.id === id).points);
-    const isFinished = useSelector(state => state.boundaries
-        .find((shape)=> shape.id === id).isFinished);
-    const isMouseOverStartPoint = useSelector(state =>
-        state.boundaries
-            .find((shape)=> shape.id === id).isMouseOverStartPoint );
-    const curMousePos = useSelector(state => state.boundariesControl.curMousePos);
-    const elClicked = useSelector(state => state.boundariesControl.elClicked);
-    const lowestPointPosition =
-        useSelector(state => state.boundariesControl.lowestPointPosition);
+    const [curMousePos, setCurMousePos] = useState([0, 0])
+
 
     const getMousePos = (stage) => {
         return [stage.getPointerPosition().x - 3.5, stage.getPointerPosition().y - 3.5];
@@ -62,51 +50,123 @@ const MyStage = (props) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [selectedId])
 
-    const handleClick = id => {
-        return event => {
 
-            dispatch(setMode('draw'));
+    useEffect(()=> {
+        if (shape){
+            const id = shape.id;
+            const points = shape.points;
+            const type = shape.type;
+            if (points.length === 2 && type === 'line'){
+                dispatch(setIsFinished({ id: id, value: true }))
+                dispatch(setSelectedId(id));
+            }
+        }
+    }, [shape])
+
+    const handleClick = shape => {
+        return event => {
+            const id = shape.id;
+            const isFinished = shape.isFinished;
+            const points = shape.points;
+            const isMouseOverStartPoint = shape.isMouseOverStartPoint
+            const type = shape.type;
+
 
             if (isFinished) return;
             const stage = event.target.getStage();
-            const mousePos = getMousePos(stage);
-            if (isMouseOverStartPoint && points.length >= 3) {
+            const mousePos = [stage.getPointerPosition().x - 3.5, stage.getPointerPosition().y - 3.5];
+            if (isMouseOverStartPoint && points.length >= 3 && type === 'polygon') {
                 dispatch(setIsFinished({ id: id, value: true }))
-                const newShape = {...shapesObj}
-                newShape.id = id + 1;
-                dispatch(addShape(newShape));
-                dispatch(setId(id + 1));
+                dispatch(setSelectedId(id));
             } else {
                 dispatch(setPoints({ id: id, value: mousePos }))
             }
         }
     };
 
+
     const handleMouseMove = event => {
         const stage = event.target.getStage();
         const mousePos = getMousePos(stage);
 
-        dispatch(setCurMousePos(mousePos));
-    };
-
-    const onlyDraw = (func) => {
-        if (mode === 'draw'){
-            return func;
-        }
-
-        return null;
+        setCurMousePos(mousePos);
     }
 
-    const handleMouseDown = () => {
+
+    const xCoordination = useCallback(() => {
+
+        const lines = [];
+
+        if (width && height){
+            const startY = 0;
+            const endY = height;
+            const divider = Math.floor(width / 20);
+            for (let i=divider ; i<=width; i += divider){
+                const newLine = {start: [i, startY], end: [i, endY]}
+                lines.push(newLine);
+            }
+
+            return lines;
+        }
+
+        return []
+    }, [width, height])
+
+    const yCoordination = useCallback(() => {
+
+        const lines = [];
+
+        if (width && height){
+            const startX = 0;
+            const endX = width;
+            const divider = Math.floor(height / 20);
+            for (let i=divider ; i<=height; i += divider){
+                const newLine = {start: [startX, i], end: [endX, i]}
+                lines.push(newLine);
+            }
+
+            return lines;
+        }
+
+        return []
+    }, [width, height])
+
+    const handleMouseOver = (event) => {
+        if (shape){
+            if (!shape.isFinished){
+                event.target.getStage().container().style.cursor = 'crosshair';
+            }else if(shape.isFinished) {
+                event.target.getStage().container().style.cursor = 'default';
+            }
+        }
     }
 
     return(
         <Stage
             width={(!!width ? width: 800)}
             height={(!!height ? height: 800)}
-            onMouseDown={handleClick(id)}
+            onMouseDown={shape ? handleClick(shape) : null}
             onMouseMove={handleMouseMove}
+            onMouseOver={handleMouseOver}
         >
+            <Layer listening={false}>
+                {
+                    xCoordination().map((line, index) => {
+                        return(
+                            <Line key={index} points={[line.start[0], line.start[1],
+                                line.end[0], line.end[1]]} stroke={`black`} opacity={0.2}/>
+                        );
+                    })
+                }
+                {
+                    yCoordination().map((line, index) => {
+                        return(
+                            <Line key={index} points={[line.start[0], line.start[1],
+                                line.end[0], line.end[1]]} stroke={`black`} opacity={0.2}/>
+                        );
+                    })
+                }
+            </Layer>
             {
                 allShapes.map((shape)=> {
                     const groupParameters = {
@@ -116,13 +176,11 @@ const MyStage = (props) => {
                         points: shape.points,
                         x: shape.x,
                         y: shape.y,
+                        editable: shape.editable,
+                        type: shape.type,
                         curMousePos,
                         dispatch,
-                        mode,
                         selectedId,
-                        stageWidth: width,
-                        stageHeight: height,
-                        lowestPointPosition
                     }
                     return <MyLayer {...groupParameters}/>
                 })

@@ -39,17 +39,20 @@ const Preview = (props) => {
             {
                 (!!videoUrl
                         ?
-                        <Box width={480} m={1} mt={0} ml={0} position={`relative`}
+                        <Box width={`100%`}
+                             height={`100%`}
+                             display={`flex`}
+                             alignItems={`center`}
+                             position={`relative`}
                              onMouseEnter={handleMouseOver}
                              onMouseLeave={handleMouseLeave}>
                             <VideoJs url={videoUrl} controls={false}/>
                             <VideoComponents {...videoComponent_parameters}/>
                         </Box>
                         :
-                        <Box m={1} mt={0} ml={0}>
-                            <Paper elevation={3} sx={{ border: 1, width: `100px`,
-                                height: `100px`, display: `grid`,
-                                placeItems: `center`, bgcolor: `#1d1d1d` }}>
+                        <Box width={`100%`} maxWidth={480} height={270}>
+                            <Paper elevation={3} sx={{ display: `grid`,
+                                placeItems: `center`, bgcolor: `black` }}>
                                 <CircularProgress sx={{ color: `#fff` }}/>
                             </Paper>
                         </Box>

@@ -11,7 +11,7 @@ const Video = (props) => {
     return(
         !!data
             ?
-            <Box width={852} mb={1}>
+            <Box width={852}>
                 <VideoJs url={data} controls={controls} setHeight={setHeight} setWidth={setWidth}/>
             </Box>
             :

@@ -17,7 +17,7 @@ const RTL = (props) => {
 
 const TextBox = (props) => {
 
-    const { label, value, setValue, disable = true } = props
+    const { label, value, setValue, disable = true, dir } = props
 
     const handleChange = (event) =>{
         setValue(event.target.value);
@@ -31,6 +31,7 @@ const TextBox = (props) => {
         <RTL>
             <TextField id="outlined-basic"
                        fullWidth
+                       inputProps={{ dir: dir }}
                        disabled={!disable}
                        label={label}
                        variant="outlined"

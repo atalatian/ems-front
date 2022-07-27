@@ -7,9 +7,7 @@ const Boundaries = (props) => {
     const { width, height } = props
 
     return(
-        <BoundariesContextProvider>
-            <MyStage width={width} height={height}/>
-        </BoundariesContextProvider>
+        <MyStage width={width} height={height}/>
     );
 }
 

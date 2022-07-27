@@ -27,10 +27,10 @@ const OneCamera = forwardRef((props, ref) => {
             left: `50%`, transform: `translate(-50%, -50%)` }} ref={ref}>
             <Stack width={width}>
                 <Box mb={2}>
-                    <TextBox value={name} setValue={setName} label={`اسم`}/>
+                    <TextBox value={name} setValue={setName} label={`اسم`} dir={`rtl`}/>
                 </Box>
                 <Box mb={2}>
-                    <TextBox value={url} setValue={setUrl} label={`آدرس`}/>
+                    <TextBox value={url} setValue={setUrl} label={`آدرس`} dir={`ltr`}/>
                 </Box>
                 <Box mb={2}>
                     <SelectBox detectors={detectors} setDetectors={setDetectors}/>

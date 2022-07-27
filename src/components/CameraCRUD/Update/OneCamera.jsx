@@ -10,7 +10,7 @@ const OneCamera = (props) => {
     const [name, setName] = useState('');
     const [url, setUrl] = useState('');
     const [detectors, setDetectors] = useState([]);
-    const width = 300;
+    const width = `100%`;
 
     const textBoxes_parameters = {
         name: name,

@@ -9,10 +9,15 @@ import {BorderOuter, Settings} from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import {useState} from "react";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import SettingsAccordion from "./SettingsAccordion";
+import CameraUpdate from "../CameraCRUD/Update/CameraUpdate";
 
 
 const ConditionalRender = (props) => {
-    return props.condition ? props.children : null;
+    //return props.condition ? props.children : null;
+    return props.children
 }
 
 const Page = (props) => {
@@ -20,10 +25,6 @@ const Page = (props) => {
     const [showBoundaries, setShowBoundaries] = useState(false)
 
     const params = useParams();
-
-    const handleSettingsClick = () => {
-
-    }
 
     const handleBoundariesClick = () => {
         setShowBoundaries(true)
@@ -38,39 +39,20 @@ const Page = (props) => {
 
     return(
         <ConditionalRender condition={!!Object.keys(stream).length}>
-            <Stack display={`inline-flex`}>
-                <Stack direction={`row`}>
-                    {
-                        showBoundaries ?
-                            <VideoCanvas id={stream.id}/>
-                            : <Video controls={true} id={stream.id}/>
-                    }
-                    <Stack mr={1}>
-                        <Button dir={`ltr`} sx={{ mb: 1 }} variant={`contained`}
-                                endIcon={<Settings/>}>
-                            تنظیمات
-                        </Button>
+            <Stack direction={`row`}>
+                <Stack display={`inline-flex`}>
+                    <Box mb={1}>
                         {
-                            showBoundaries
-                                ?
-                                <Button onClick={handleVideoClick}
-                                        dir={`ltr`} sx={{ mb: 1 }} variant={`contained`}
-                                        endIcon={<OndemandVideoIcon/>}>
-                                    ویدیو
-                                </Button>
-                                :
-                                <Button onClick={handleBoundariesClick}
-                                        dir={`ltr`} sx={{ mb: 1 }} variant={`contained`}
-                                        endIcon={<BorderOuter/>}>
-                                    مرزبندی
-                                </Button>
+                            showBoundaries ?
+                                <VideoCanvas id={stream.id}/>
+                                : <Video controls={true} id={stream.id}/>
                         }
-                    </Stack>
+                    </Box>
+                    <Description name={stream.name} url={stream.url}/>
+                    <MyAccordion/>
                 </Stack>
-                <Description name={stream.name} url={stream.url}/>
-                <MyAccordion/>
+                <SettingsAccordion id={params['id']} {...{showBoundaries, setShowBoundaries}}/>
             </Stack>
-
         </ConditionalRender>
     );
 }

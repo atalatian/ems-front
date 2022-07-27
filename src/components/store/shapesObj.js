@@ -1,7 +1,7 @@
 
-const shapesObj = { id: 0,
-    x: 0, y: 0, points: [],
-    isFinished: false, isMouseOverStartPoint: false }
+const shapesObj = { id: null,
+    x: 0, y: 0, points: [], type: 'polygon', name: '', isAccepted: false,
+    isFinished: false, isMouseOverStartPoint: false, editable: false, }
 
 
 export default shapesObj;

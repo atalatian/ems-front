@@ -25,18 +25,6 @@ const VideoCanvas = (props) => {
         <Box position={`relative`}>
             <Box display={`flex`} justifyContent={`row`}>
                 <Video id={id} controls={false} setHeight={setHeight} setWidth={setWidth}/>
-                <Box mr={1}>
-                    <IconButton onClick={handleDelete} disabled={selectedId === null}
-                                sx={{
-                                    bgcolor: `error.main`,
-                                    color: `#fff`,
-                                    "&:hover": { bgcolor: `error.dark` },
-                                    "&.Mui-disabled": { bgcolor: `darkgray` },
-                                    borderRadius: 1
-                                }}>
-                        <Delete htmlColor={selectedId === null ? `gray` : `#fff`}/>
-                    </IconButton>
-                </Box>
             </Box>
             <Box position={`absolute`} top={0}>
                 <Boundaries width={width} height={height}/>
