@@ -8,7 +8,7 @@ import {useCallback, useEffect, useState} from "react";
 const MyStage = (props) => {
 
     const { width, height } = props;
-    const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted));
+    const shape = useSelector(state => state.boundaries.find((shape) => !shape.isFinished));
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
 
     const dispatch = useDispatch();
@@ -133,11 +133,9 @@ const MyStage = (props) => {
 
     const handleMouseOver = (event) => {
         if (shape){
-            if (!shape.isFinished){
-                event.target.getStage().container().style.cursor = 'crosshair';
-            }else if(shape.isFinished) {
-                event.target.getStage().container().style.cursor = 'default';
-            }
+            event.target.getStage().container().style.cursor = 'crosshair';
+        }else {
+            event.target.getStage().container().style.cursor = 'default';
         }
     }
 

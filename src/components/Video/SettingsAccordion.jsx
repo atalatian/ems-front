@@ -39,6 +39,7 @@ const SettingsAccordion = (props) => {
 
     const allShapes = useSelector(state => state.boundaries);
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
+    const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted))
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -209,10 +210,12 @@ const SettingsAccordion = (props) => {
                                     </Paper>
                             }
                         </Box>
-                        <Button onClick={handleAddButton}
-                                dir={`ltr`} endIcon={<AddIcon/>} variant={`contained`}>
-                            اضافه کردن
-                        </Button>
+                        {   !shape &&
+                            <Button onClick={handleAddButton}
+                                    dir={`ltr`} endIcon={<AddIcon/>} variant={`contained`}>
+                                اضافه کردن
+                            </Button>
+                        }
                     </Stack>
                 </AccordionDetails>
             </Accordion>
