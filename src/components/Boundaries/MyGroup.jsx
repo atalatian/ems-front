@@ -94,6 +94,8 @@ const MyGroup = (props) => {
     }
 
     const handleMouseEnter = (event) => {
+        event.cancelBubble = isFinished
+
         if (isFinished){
             event.target.getStage().container().style.cursor = 'pointer';
         }

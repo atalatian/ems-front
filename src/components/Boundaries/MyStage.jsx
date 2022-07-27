@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setIsFinished, setPoints, addShape, editPoints, deleteShape, setType} from "../store/boundariesSlice";
 import {setSelectedId} from "../store/boundariesControlSlice";
 import MyLayer from "./MyLayer";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 const MyStage = (props) => {
 
@@ -13,7 +13,8 @@ const MyStage = (props) => {
 
     const dispatch = useDispatch();
     const allShapes = useSelector(state => state.boundaries);
-    const [curMousePos, setCurMousePos] = useState([0, 0])
+    const [curMousePos, setCurMousePos] = useState([0, 0]);
+    const shapeRef = useRef();
 
 
     const getMousePos = (stage) => {
@@ -60,6 +61,9 @@ const MyStage = (props) => {
                 dispatch(setIsFinished({ id: id, value: true }))
                 dispatch(setSelectedId(id));
             }
+            shapeRef.current.container().style.cursor = 'crosshair';
+        }else {
+            shapeRef.current.container().style.cursor = 'default';
         }
     }, [shape])
 
@@ -131,21 +135,14 @@ const MyStage = (props) => {
         return []
     }, [width, height])
 
-    const handleMouseOver = (event) => {
-        if (shape){
-            event.target.getStage().container().style.cursor = 'crosshair';
-        }else {
-            event.target.getStage().container().style.cursor = 'default';
-        }
-    }
 
     return(
         <Stage
             width={(!!width ? width: 800)}
             height={(!!height ? height: 800)}
+            ref={shapeRef}
             onMouseDown={shape ? handleClick(shape) : null}
             onMouseMove={handleMouseMove}
-            onMouseOver={handleMouseOver}
         >
             <Layer listening={false}>
                 {
