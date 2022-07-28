@@ -14,6 +14,7 @@ const TextBoxes = (props) =>{
         value: name,
         setValue: setName,
         submit: submit,
+        dir: `rtl`,
     }
 
     const urlTextBox_parameters = {
@@ -22,6 +23,7 @@ const TextBoxes = (props) =>{
         value: url,
         setValue: setUrl,
         submit: submit,
+        dir: 'ltr',
     }
 
     return(

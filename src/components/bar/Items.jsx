@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import SettingsButton from './SetttingsButton';
 import MenuButton from "./MenuButton";
-import MySelect from "../Recordings/MySelect";
 import BoundariesButton from "./BoundariesButton";
 import Box from "@mui/material/Box";
 import {useContext} from "react";
@@ -22,10 +21,14 @@ const Items = () => {
     return(
         <>
             <MenuButton/>
-            <Routes>
+            {
+                /*
+                <Routes>
                 <Route path={`camera/:id`}
                        element={<AllElements connection={connection}/>}/>
             </Routes>
+                 */
+            }
         </>
     );
 }

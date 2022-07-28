@@ -12,7 +12,7 @@ const AddFloatingButton = () => {
     }
 
     return(
-        <Box ref={handleRef} position={`absolute`} bottom={0} left={0} m={4} id={id}>
+        <Box ref={handleRef} position={`fixed`} bottom={0} left={0} m={4} id={id}>
         </Box>
     );
 }

@@ -3,7 +3,7 @@ import MyMenu from "./menu";
 
 const MyBox = () => {
   return(
-      <Box minHeight={`100vh`} position={`sticky`} top={0}>
+      <Box height={`100vh`} position={`sticky`} top={0}>
           <MyMenu/>
       </Box>
   )

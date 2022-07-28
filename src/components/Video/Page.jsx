@@ -49,9 +49,8 @@ const Page = (props) => {
                         }
                     </Box>
                     <Description name={stream.name} url={stream.url}/>
-                    <MyAccordion/>
                 </Stack>
-                <SettingsAccordion id={params['id']} {...{showBoundaries, setShowBoundaries}}/>
+                <SettingsAccordion urlID={params['id']} {...{showBoundaries, setShowBoundaries}}/>
             </Stack>
         </ConditionalRender>
     );

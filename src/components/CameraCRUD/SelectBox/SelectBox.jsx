@@ -20,6 +20,7 @@ const MenuProps = {
     PaperProps: {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            marginTop: 8,
         },
     },
 };
@@ -66,6 +67,14 @@ export default function SelectBox(props) {
         return detectorsData.find((detector) => detector.id === value)?.name;
     }
 
+    const handleDeleteClick = (value) => {
+        return (e) => {
+            e.stopPropagation();
+            console.log(value)
+        }
+    }
+
+
     return (
         <Box flexGrow={1}>
             <RTL>
@@ -81,7 +90,7 @@ export default function SelectBox(props) {
                         renderValue={(selected) => (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                 {selected.map((value) => (
-                                    <Chip key={value} label={getLabel(value)}
+                                    <Chip key={value} onDelete={handleDeleteClick(value)} label={getLabel(value)}
                                           sx={{ textTransform: `capitalize` }}/>
                                 ))}
                             </Box>

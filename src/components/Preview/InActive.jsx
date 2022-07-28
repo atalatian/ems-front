@@ -26,9 +26,9 @@ const InActive = (props) => {
     }
 
     return(
-        <Paper sx={{ p: 2, width: `100%`, m: 1, mr: 0, mt: 0,
+        <Paper elevation={13} sx={{ p: 2, width: `100%`, m: 5, mr: 0, mt: 0,
             maxWidth: `480px`, height: `270px`,
-            border: 1, boxSizing: `border-box` }}>
+            boxSizing: `border-box` }}>
             <Stack justifyContent={`space-between`} height={`100%`}>
                 <Box textAlign={`center`} alignSelf={`center`}>
                     <NoPhotographyIcon sx={{ fontSize: `80px` }}/>

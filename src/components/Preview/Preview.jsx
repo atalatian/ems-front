@@ -50,9 +50,10 @@ const Preview = (props) => {
                             <VideoComponents {...videoComponent_parameters}/>
                         </Box>
                         :
-                        <Box width={`100%`} maxWidth={480} height={270}>
-                            <Paper elevation={3} sx={{ display: `grid`,
-                                placeItems: `center`, bgcolor: `black` }}>
+                        <Box width={`100%`} maxWidth={480} height={270}
+                             display={`flex`} justifyContent={`center`} alignItems={`center`}>
+                            <Paper elevation={3}
+                                   sx={{ textAlign: 'center', bgcolor: `black` }}>
                                 <CircularProgress sx={{ color: `#fff` }}/>
                             </Paper>
                         </Box>

@@ -46,7 +46,9 @@ const SelectBoxUpdate = (props) => {
 
     const returnEditButton = () => {
         return(
-            <IconButton onClick={handleEditButton} sx={{ mr: 1 }}>
+            <IconButton onClick={handleEditButton}
+                        sx={{ mr: 1, bgcolor: `primary.main`, color: `#fff`,
+                '&:hover': { backgroundColor: `primary.dark` }, }}>
                 <EditIcon/>
             </IconButton>
         );
@@ -56,9 +58,13 @@ const SelectBoxUpdate = (props) => {
         return(
             <Stack flexDirection={`row`} alignItems={`center`}>
                 <IconButton onClick={handleApplyButton} 
-                sx={{ m: 0.1 }} size={`small`}><Done/></IconButton>
+                sx={{ mr: 1, bgcolor: `success.main`,
+                    color: `#fff`,
+                    '&:hover': { backgroundColor: `success.dark` }, }} size={`small`}><Done/></IconButton>
                 <IconButton onClick={handleRevertButton}
-                 sx={{ m: 0.1 }} size={`small`}><Undo/></IconButton>
+                 sx={{ mr: 1, bgcolor: `error.main`,
+                     color: `#fff`,
+                     '&:hover': { backgroundColor: `error.dark` }, }} size={`small`}><Undo/></IconButton>
             </Stack>
         );
     }
