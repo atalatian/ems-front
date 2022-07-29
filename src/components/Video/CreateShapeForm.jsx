@@ -7,10 +7,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     deleteShape,
     editPoints,
-    setAccepted,
+    setAccepted, setId,
     setIsFinished,
     setIsMouseOverStartPoint,
-    setShapeName,
+
     setType
 } from "../store/boundariesSlice";
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
@@ -19,11 +19,15 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import CreateTextBox from "./CreateTextBox";
 import Typography from "@mui/material/Typography";
+import {useSetShapeMutation} from "../store/dataApi";
 
 const CreateShapeForm = (props) => {
 
     const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted))
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
+    const [setShape] = useSetShapeMutation();
+
+    const { cameraId } = props;
 
     const id = shape?.id;
     const name = shape?.name;
@@ -31,7 +35,6 @@ const CreateShapeForm = (props) => {
 
     const [error, setError] = useState(false);
     const dispatch = useDispatch();
-
 
     const handleShapeClick = (name) => {
         return (e) => {
@@ -58,13 +61,30 @@ const CreateShapeForm = (props) => {
 
     const handleDiscardClick = () => {
         dispatch(deleteShape({ id: id }));
+        if (selectedId === id){
+            dispatch(setSelectedId(null))
+        }
     }
 
 
-    const handleAcceptClick = () => {
+    const handleAcceptClick = async () => {
         if (shape.isFinished){
             setError(false)
             dispatch(setAccepted({ id: id, value: true }));
+            const newShape = {
+                name: shape.name,
+                boundary: {
+                    points: shape.points.map(point =>
+                        [point[0] + shape.x, point[1] + shape.y]),
+                },
+                geometry_type: shape.type,
+                stream: cameraId,
+            }
+            const { data } = await setShape(newShape);
+            dispatch(setId({ id: id, value: data.id }));
+            if (selectedId === id){
+                dispatch(setSelectedId(data.id));
+            }
         }else {
             setError(true)
         }

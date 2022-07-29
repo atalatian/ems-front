@@ -15,7 +15,7 @@ export const DataApi = createApi({
             return headers
         }
     }),
-    tagTypes: [`Streams`, `Stream`, `Events`],
+    tagTypes: [`Streams`, `Stream`, `Events`, 'Shapes'],
     endpoints: (builder) => ({
         getDetectors: builder.query({
             query: ()=> `detectors/`,
@@ -67,8 +67,36 @@ export const DataApi = createApi({
                 }
             },
             invalidatesTags: [`Events`],
-        })
+        }),
 
+        setShape : builder.mutation({
+            query(shape){
+                return{
+                    url: `geometries/`,
+                    method: `POST`,
+                    body: shape,
+                }
+            }
+        }),
+
+        editShape: builder.mutation({
+            query(obj){
+                return{
+                    url: `geometries/${obj.id}/`,
+                    method: `PATCH`,
+                    body: obj.boundary,
+                }
+            }
+        }),
+
+        deleteShape: builder.mutation({
+            query(id){
+                return{
+                    url: `geometries/${id}/`,
+                    method: `DELETE`,
+                }
+            }
+        }),
     }),
 })
 
@@ -76,4 +104,5 @@ export const DataApi = createApi({
 // auto-generated based on the defined endpoints
 export const { useGetDetectorsQuery, useGetStreamsQuery, useGetEventsQuery,
     useGetStreamQuery, useDeleteEventMutation,
+    useSetShapeMutation, useEditShapeMutation, useDeleteShapeMutation,
     useSetStreamMutation, useSetStreamsMutation } = DataApi;

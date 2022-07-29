@@ -10,10 +10,10 @@ const MyLine = (props) => {
             hitStrokeWidth: 24,
         } : null;
 
+
     return(
         <>
             <Line
-
                 points={
                     points.concat(isFinished ? [] : curMousePos)
                         .reduce((a, b) => a.concat(b), []).map((point)=> {
@@ -21,7 +21,6 @@ const MyLine = (props) => {
                     })
                 }
                 stroke="red"
-                perfectDrawEnabled={false}
                 opacity={0.7}
                 fill={'#FFC8C8'}
                 strokeWidth={3}

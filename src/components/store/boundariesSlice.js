@@ -1,7 +1,41 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = []
 
+export const getShapes = createAsyncThunk(
+    'boundaries/getShapes',
+    async (streamId, thunkAPI)=>{
+        const token = thunkAPI.getState().auth.token;
+
+        let headers;
+        if (token) {
+            headers = {'Authorization': `Token ${token}`}
+        }
+        const config = {
+            headers,
+        }
+
+
+        const {data} = await axios.get(`http://localhost:8000/api/geometries/`
+            ,config);
+
+
+        return data.filter((shape) => shape.stream == streamId).map((shape)=>{
+            return {
+                id: shape.id,
+                x: 0,
+                y: 0,
+                points: [...shape.boundary.points.map((point) => {return  [...point]})],
+                type: shape.geometry_type,
+                name: shape.name,
+                isAccepted: true,
+                isFinished: true,
+                isMouseOverStartPoint: shape.geometry_type === 'polygon',
+                editable: false,
+            }
+        })
+})
 
 const boundariesSlice = createSlice({
     name: 'boundaries',
@@ -97,12 +131,26 @@ const boundariesSlice = createSlice({
             }
         },
 
+        setId(state, { payload }){
+            for (const shape of state){
+                if (shape.id === payload.id){
+                    shape.id = payload.value
+                }
+            }
+        },
+
+    },
+
+    extraReducers : (builder) => {
+        builder.addCase(getShapes.fulfilled, (state, {payload}) => {
+            return payload
+        })
     }
 })
 
 export const { setPoints, setShape,
-    setIsFinished, editPoints, addShape, setType, setEditable, setAccepted,
-    setIsMouseOverStartPoint, setXY, deleteShape, setShapeName, } =
+    setIsFinished, editPoints, addShape, setType, setEditable, setAccepted, setId,
+    setIsMouseOverStartPoint, setXY, deleteShape, setShapeName} =
     boundariesSlice.actions;
 
 export default boundariesSlice.reducer;

@@ -1,21 +1,30 @@
 import {Layer, Line, Stage} from "react-konva";
 import {useDispatch, useSelector} from "react-redux";
-import {setIsFinished, setPoints, addShape, editPoints, deleteShape, setType} from "../store/boundariesSlice";
+import {
+    setIsFinished,
+    setPoints,
+    editPoints,
+    deleteShape,
+    getShapes
+} from "../store/boundariesSlice";
 import {setSelectedId} from "../store/boundariesControlSlice";
 import MyLayer from "./MyLayer";
 import {useCallback, useEffect, useRef, useState} from "react";
+import {useParams} from "react-router-dom";
 
 const MyStage = (props) => {
 
     const { width, height } = props;
     const shape = useSelector(state => state.boundaries.find((shape) => !shape.isFinished));
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
+    const params = useParams();
 
     const dispatch = useDispatch();
+
     const allShapes = useSelector(state => state.boundaries);
+
     const [curMousePos, setCurMousePos] = useState([0, 0]);
     const shapeRef = useRef();
-
 
     const getMousePos = (stage) => {
         return [stage.getPointerPosition().x - 3.5, stage.getPointerPosition().y - 3.5];

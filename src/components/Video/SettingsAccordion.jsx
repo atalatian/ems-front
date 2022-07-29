@@ -6,24 +6,23 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {BorderOuter, Delete, Done, Settings, Undo} from "@mui/icons-material";
-import {ListItem, ListItemButton, ListItemIcon, Stack} from "@mui/material";
+import {ListItem,ListItemIcon, Stack} from "@mui/material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
 import {useDispatch, useSelector} from "react-redux";
 import Paper from "@mui/material/Paper";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {addShape, deleteShape, setEditable, setShape} from "../store/boundariesSlice";
 import CameraUpdate from "../CameraCRUD/Update/CameraUpdate";
-import {useGetStreamQuery} from "../store/dataApi";
-import OneCamera from "../CameraCRUD/Update/OneCamera";
 import {setSelectedId} from "../store/boundariesControlSlice";
 import AddIcon from "@mui/icons-material/Add";
 import CreateShapeForm from "./CreateShapeForm";
 import shapesObj from "../store/shapesObj";
+import { getShapes } from '../store/boundariesSlice';
+import {useDeleteShapeMutation, useEditShapeMutation} from "../store/dataApi";
 
 
 const SettingsAccordion = (props) => {
@@ -38,12 +37,22 @@ const SettingsAccordion = (props) => {
     const dispatch = useDispatch();
 
     const allShapes = useSelector(state => state.boundaries);
+
+    const [editShape] = useEditShapeMutation();
+    const [deleteShapeServer] = useDeleteShapeMutation();
+
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
     const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted))
+
+
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     }
+
+    useEffect(()=>{
+        dispatch(getShapes(urlID))
+    }, [])
 
     useEffect(()=>{
         if (expanded === 'panel2'){
@@ -55,6 +64,7 @@ const SettingsAccordion = (props) => {
         }
     }, [expanded])
 
+
     const handleEditClick = (id, shape) => {
         return (e) => {
             e.stopPropagation()
@@ -64,10 +74,11 @@ const SettingsAccordion = (props) => {
     }
 
     const handleDeleteClick = (id) => {
-        return (e)=> {
+        return async (e)=> {
             e.stopPropagation()
             dispatch(deleteShape({ id: id }))
             remShape.current = remShape.current.filter((shape)=> shape.id !== id);
+            await deleteShapeServer(id);
         }
     }
 
@@ -81,10 +92,17 @@ const SettingsAccordion = (props) => {
         }
     }
 
-    const handleSuccessClick = (id) => {
-        return (e) => {
+    const handleSuccessClick = (id, shape) => {
+        return async (e) => {
             e.stopPropagation();
             dispatch(setEditable({ id: id, value: false }));
+            const boundary = {
+                boundary: {
+                    points: shape.points.map(point =>
+                        [point[0] + shape.x, point[1] + shape.y]),
+                },
+            }
+            await editShape({ id: id, boundary });
         }
     }
 
@@ -109,7 +127,7 @@ const SettingsAccordion = (props) => {
         dispatch(addShape(newShape));
     }
 
-    const oneListItem = ({ id, isFinished, editable, name }, shape) => {
+    const oneListItem = ({ id, isFinished, editable, name, type }, shape) => {
         if (!isFinished) return null;
 
         return(
@@ -122,7 +140,7 @@ const SettingsAccordion = (props) => {
                 }
             }}>
                 <ListItemText sx={{ textAlign: `right` }}
-                              primary={`چند ضلعی`} secondary={name || id}/>
+                              primary={type === 'polygon' ? 'چند ضلعی' : 'خط'} secondary={name || 'بدون نام'}/>
                 <ListItemIcon sx={{ justifyContent: `flex-end` }}>
                     <Stack direction={`row-reverse`}>
                         <IconButton onClick={handleDeleteClick(id)}
@@ -134,7 +152,7 @@ const SettingsAccordion = (props) => {
                         {
                             editable ?
                                 <Stack flexDirection={`row-reverse`} alignItems={`center`}>
-                                    <IconButton onClick={handleSuccessClick(id)} sx={{ m: 1, mr: 0, mt: 0, mb: 0,
+                                    <IconButton onClick={handleSuccessClick(id, shape)} sx={{ m: 1, mr: 0, mt: 0, mb: 0,
                                         bgcolor: `success.main`,
                                         color: `#fff`,
                                         '&:hover': { backgroundColor: `success.dark` },
@@ -219,7 +237,7 @@ const SettingsAccordion = (props) => {
                     </Stack>
                 </AccordionDetails>
             </Accordion>
-            <CreateShapeForm/>
+            <CreateShapeForm cameraId={urlID}/>
         </Box>
     );
 }
