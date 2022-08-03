@@ -14,15 +14,16 @@ import Button from "@mui/material/Button";
 import EditIcon from '@mui/icons-material/Edit';
 import {useDispatch, useSelector} from "react-redux";
 import Paper from "@mui/material/Paper";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {addShape, deleteShape, setEditable, setShape} from "../store/boundariesSlice";
 import CameraUpdate from "../CameraCRUD/Update/CameraUpdate";
-import {setSelectedId} from "../store/boundariesControlSlice";
+import {setSelectedId, setShowCheckeredBoard} from "../store/boundariesControlSlice";
 import AddIcon from "@mui/icons-material/Add";
 import CreateShapeForm from "./CreateShapeForm";
 import shapesObj from "../store/shapesObj";
 import { getShapes } from '../store/boundariesSlice';
 import {useDeleteShapeMutation, useEditShapeMutation} from "../store/dataApi";
+import {prev} from "stylis";
 
 
 const SettingsAccordion = (props) => {
@@ -30,7 +31,6 @@ const SettingsAccordion = (props) => {
     const { showBoundaries, setShowBoundaries } = props
     const [expanded, setExpanded] = React.useState(false);
     const list = useRef();
-    const remShape = useRef([]);
 
     const { urlID } = props;
 
@@ -42,8 +42,10 @@ const SettingsAccordion = (props) => {
     const [deleteShapeServer] = useDeleteShapeMutation();
 
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
-    const shape = useSelector(state => state.boundaries.find((shape) => !shape.isAccepted))
+    const shape =
+        useSelector(state => state.boundaries.find((shape) => !shape.isAccepted));
 
+    const [remShape, setRemShape] = useState([])
 
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -69,7 +71,7 @@ const SettingsAccordion = (props) => {
         return (e) => {
             e.stopPropagation()
             dispatch(setEditable({ id: id, value: true }));
-            remShape.current.push(shape);
+            setRemShape((prev) => [...prev, shape]);
         }
     }
 
@@ -77,7 +79,7 @@ const SettingsAccordion = (props) => {
         return async (e)=> {
             e.stopPropagation()
             dispatch(deleteShape({ id: id }))
-            remShape.current = remShape.current.filter((shape)=> shape.id !== id);
+            setRemShape((prev) => prev.filter((shape)=> shape.id !== id))
             await deleteShapeServer(id);
         }
     }
@@ -103,15 +105,16 @@ const SettingsAccordion = (props) => {
                 },
             }
             await editShape({ id: id, boundary });
+            setRemShape((prev) => prev.filter((shape)=> shape.id !== id));
         }
     }
 
     const handleRevertClick = (id) => {
         return (e) => {
             e.stopPropagation();
-            const value = remShape.current.find((shape) => shape.id === id);
+            const value = remShape.find((shape) => shape.id === id);
             dispatch(setShape({ id: id, value: value }));
-            remShape.current = remShape.current.filter((shape)=> shape.id !== id);
+            setRemShape((prev) => prev.filter((shape)=> shape.id !== id));
         }
     }
 
@@ -126,6 +129,20 @@ const SettingsAccordion = (props) => {
         newShape.id = Date.now().valueOf();
         dispatch(addShape(newShape));
     }
+
+
+    useEffect(()=>{
+
+        if (shape && remShape.length > 0){
+            dispatch(setShowCheckeredBoard(true));
+        } else if (!shape && remShape.length > 0){
+            dispatch(setShowCheckeredBoard(true));
+        } else if (shape && remShape.length === 0){
+            dispatch(setShowCheckeredBoard(true));
+        } else {
+            dispatch(setShowCheckeredBoard(false));
+        }
+    }, [shape, remShape])
 
     const oneListItem = ({ id, isFinished, editable, name, type }, shape) => {
         if (!isFinished) return null;

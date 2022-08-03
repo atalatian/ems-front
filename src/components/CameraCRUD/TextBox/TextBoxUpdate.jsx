@@ -32,8 +32,8 @@ const TextBoxUpdate = (props) => {
     }
 
 
-    const handleApplyButton = async (event) =>{
-        await setStream(submit)
+    const handleApplyButton = async () =>{
+        await setStream({ id: submit.id, switch: submit })
         //Send Data
         setMode(MODE_NORMAL);
         setDisable(false);

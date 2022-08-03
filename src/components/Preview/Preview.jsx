@@ -13,7 +13,6 @@ const Preview = (props) => {
 
     const [open, setOpen] = useState(false);
     const [description, setDescription] = useState(false);
-    const [enable, setEnable] = useState(isActive)
     const [trigger, { data = null }] = useLazyGetStreamQuery();
     const videoUrl = data;
 
@@ -39,9 +38,8 @@ const Preview = (props) => {
         name: name,
         url: url,
         id: id,
-        enable,
-        setEnable,
-        openDisable: !!url,
+        isActive,
+        videoUrl: videoUrl,
     }
 
     return(

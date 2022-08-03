@@ -10,14 +10,14 @@ import {
 import {setSelectedId} from "../store/boundariesControlSlice";
 import MyLayer from "./MyLayer";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {useParams} from "react-router-dom";
 
 const MyStage = (props) => {
 
     const { width, height } = props;
     const shape = useSelector(state => state.boundaries.find((shape) => !shape.isFinished));
     const selectedId = useSelector(state => state.boundariesControl.selectedId);
-    const params = useParams();
+    const showCheckeredBoard =
+        useSelector(state => state.boundariesControl.showCheckeredBoard);
 
     const dispatch = useDispatch();
 
@@ -155,7 +155,7 @@ const MyStage = (props) => {
         >
             <Layer listening={false}>
                 {
-                    xCoordination().map((line, index) => {
+                    showCheckeredBoard && xCoordination().map((line, index) => {
                         return(
                             <Line key={index} points={[line.start[0], line.start[1],
                                 line.end[0], line.end[1]]} stroke={`black`} opacity={0.2}/>
@@ -163,7 +163,7 @@ const MyStage = (props) => {
                     })
                 }
                 {
-                    yCoordination().map((line, index) => {
+                    showCheckeredBoard && yCoordination().map((line, index) => {
                         return(
                             <Line key={index} points={[line.start[0], line.start[1],
                                 line.end[0], line.end[1]]} stroke={`black`} opacity={0.2}/>

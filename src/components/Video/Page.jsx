@@ -2,7 +2,7 @@ import Video from "./Video";
 import MyAccordion from "../Accordion/MyAccordion";
 import {Fab, Stack} from "@mui/material";
 import Description from "./Description";
-import { useParams } from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import VideoCanvas from "./VideoCanvas";
 import {useGetStreamQuery} from "../store/dataApi";
 import {useState} from "react";
@@ -28,7 +28,8 @@ const Page = (props) => {
                 </Box>
                 <Description name={name} url={url}/>
             </Stack>
-            <SettingsAccordion urlID={params['id']} {...{showBoundaries, setShowBoundaries}}/>
+            <SettingsAccordion urlID={params['id']}
+                               {...{showBoundaries, setShowBoundaries}}/>
         </Stack>
     );
 }

@@ -31,7 +31,7 @@ const SelectBoxUpdate = (props) => {
     }
 
     const handleApplyButton = async () =>{
-        await setStream(submit);
+        await setStream({ id: submit.id, switch: submit })
         //Send Data
         setMode(MODE_NORMAL);
         setDisable(false);
