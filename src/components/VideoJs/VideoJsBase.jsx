@@ -1,42 +1,35 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 
+
 export const VideoJsBase = (props) => {
-  const videoRef = React.useRef(null);
-  const playerRef = React.useRef(null);
-  const {options, onReady} = props;
+    const {options, onReady} = props;
+    const { url=null, controls=null } = props;
 
-  React.useEffect(() => {
+    const handleRef = useCallback((el)=>{
+        if (el){
+            const player = videojs(el, options, () => {
+                onReady && onReady(player);
+            });
 
-    // Make sure Video.js player is only initialized once
-    if (!playerRef.current) {
-      const videoElement = videoRef.current;
+            player.controls(controls);
 
-      if (!videoElement) return;
+            if (url){
+                player.src(player.src([{
+                    src: `http://localhost:8000/${url}`,
+                    type: "application/x-mpegURL"
+                }]))
+            }
+        }
+    }, [url, controls])
 
-      const player = playerRef.current = videojs(videoElement, options, () => {
-        videojs.log('player is ready');
-        onReady && onReady(player);
-      });
-
-    // You could update an existing player in the else block here
-    // on prop change, for example:
-    } else {
-      // const player = playerRef.current;
-
-      // player.autoplay(options.autoplay);
-      // player.src(options.sources);
-    }
-  }, [options, videoRef]);
-
-  // Dispose the Video.js player when the functional component unmounts
-
-  return (
-    <div data-vjs-player>
-      <video ref={videoRef} className='video-js vjs-big-play-centered' />
-    </div>
-  );
+    return (
+        <div data-vjs-player>
+            <video ref={handleRef} width={480}
+                   className='video-js vjs-big-play-centered' />
+        </div>
+    );
 }
 
 export default VideoJsBase;

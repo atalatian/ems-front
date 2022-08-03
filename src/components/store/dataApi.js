@@ -43,18 +43,18 @@ export const DataApi = createApi({
         }),
 
         setStream: builder.mutation({
-            query(stream) {
+            query(obj) {
                 return {
-                    url: `streams/${stream.id}/`,
-                    method: 'PUT',
-                    body: stream,
+                    url: `streams/${obj.id}/`,
+                    method: 'PATCH',
+                    body: obj.switch,
                 }
             },
             invalidatesTags: ['Streams', 'Stream'],
         }),
 
         getEvents: builder.query({
-            query: ()=> 'events/',
+            query: (args)=> 'events/',
             providesTags: ['Events'],
 
         }),

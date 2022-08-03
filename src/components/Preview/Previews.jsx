@@ -13,9 +13,9 @@ import Typography from "@mui/material/Typography";
 
 const Container = (props) => {
     return(
-        <Box width={`100%`} maxWidth={480} height={270} borderRadius={1}
+        <Box width={`100%`} m={3} mt={0} mr={0}
+             maxWidth={480} height={270} borderRadius={3}
              boxSizing={`border-box`}
-             sx={{ bgcolor: `#000` }}
              overflow={`hidden`} display={`flex`}
              justifyContent={`center`} alignItems={`center`}>
             {props.children}
@@ -28,8 +28,10 @@ const Previews = () => {
     const { data = [] } = useGetStreamsQuery();
     const previews = data
 
-    const onePreview = ({id, name, url}) => {
-        return <Container key={id} ><Preview id={id} name={name} url={url}/></Container>
+    const onePreview = ({id, name, url, is_active}) => {
+        return <Container key={id} >
+            <Preview id={id} name={name} url={url} isActive={is_active}/>
+        </Container>
     }
 
     const oneInActive = ({ id, name, url }) => {
@@ -52,11 +54,7 @@ const Previews = () => {
                   <Stack flexDirection={`row`} flexWrap={`wrap`}>
                       {
                           previews.map((preview)=> {
-                              if (preview.is_active){
-                                  return onePreview(preview);
-                              }else {
-                                  return oneInActive(preview)
-                              }
+                              return onePreview(preview)
                           })
                       }
                   </Stack>

@@ -9,17 +9,14 @@ import {useSetStreamMutation} from "../store/dataApi";
 const InActive = (props) => {
 
     const { id, name, url } = props
-    const { streams } = props;
-
 
     const [setStream] = useSetStreamMutation();
 
     const handleClick = async () => {
-        const stream = streams.find((stream)=> stream.id === id);
-        const newStream = {...stream, is_active: true};
+        const newStream = {is_active: true};
 
         try {
-            await setStream(newStream);
+            await setStream({ id, switch: newStream });
         }catch (e) {
             console.log(e)
         }

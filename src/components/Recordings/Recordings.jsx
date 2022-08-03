@@ -17,7 +17,7 @@ const Recordings = (props) => {
     const [selectedIds, setSelectedIds] = useState([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-    const { data = [] } = useGetEventsQuery();
+    const { data = [] } = useGetEventsQuery(null , { pollingInterval: 3000 });
 
     const cards_parameters = {
         detector,
@@ -26,7 +26,7 @@ const Recordings = (props) => {
 
     return(
         <>
-            <Stack direction={`row`} alignItems={`center`}>
+            <Stack direction={`row`} alignItems={`center`} flexWrap={`wrap`}>
                 <MySelect {...{detector, setDetector}}/>
                 <SelectiveDelButton {...{setDeleteDialogOpen}}/>
                 <SelectAllCheckBox caughtEvents={data} {...{selectedIds, setSelectedIds}}/>

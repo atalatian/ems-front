@@ -15,7 +15,7 @@ const Description = (props) => {
     `
 
   return(
-      <Stack key={`description`}
+      <Box key={`description`}
              className={myCss} sx={{ position: `absolute`, top: `100%`,  }}
              justifyContent={`center`} alignItems={`flex-start`}>
           <AnimatePresence>
@@ -35,11 +35,7 @@ const Description = (props) => {
                   </Paper>
               }
           </AnimatePresence>
-          <Paper sx={{ p: 1, m: 1, backgroundColor: `#1d1d1d`}}>
-              <Typography textTransform={`capitalize`} 
-              color={`#fff`}>{name}</Typography>
-          </Paper>
-      </Stack>
+      </Box>
   );
 }
 

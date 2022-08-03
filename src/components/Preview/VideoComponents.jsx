@@ -1,10 +1,11 @@
 import Description from "./Description";
 import Open from "./Open";
+import MainControl from "./MainControl";
 
 
 const VideoComponents = (props) => {
 
-  const {open, description, name, url, id} = props
+  const {open, description, name, url, id, enable, setEnable, openDisable} = props
 
   const description_parameters = {
     render: description,
@@ -15,8 +16,8 @@ const VideoComponents = (props) => {
 
   return(
       <>
+          <MainControl name={name} id={id} url={url} enable={enable} setEnable={setEnable}/>
           <Description {...description_parameters}/>
-          <Open render={open} name={name} id={id}/>
       </>
   )
 }

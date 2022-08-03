@@ -23,6 +23,7 @@ const RTL = (props) => {
 
 const Password = (props) => {
     const {password, setPassword} = props;
+    const { error } = props;
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event) => {
@@ -41,12 +42,14 @@ const Password = (props) => {
         <RTL>
             <Box sx={{ bgcolor: `#fff`, borderRadius: 1, p: 1, m: 1 }}>
                 <FormControl fullWidth variant="outlined" size={`small`} dir={`rtl`}>
-                    <InputLabel htmlFor="outlined-adornment-password">رمز عبور</InputLabel>
+                    <InputLabel error={!!error}
+                                htmlFor="outlined-adornment-password">رمز عبور</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? 'text' : 'password'}
                         autoComplete={`on`}
                         value={password}
+                        error={!!error}
                         onChange={handleChange}
                         endAdornment={
                             <InputAdornment position="end">

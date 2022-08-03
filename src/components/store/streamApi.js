@@ -22,4 +22,4 @@ export const StreamApi = createApi({
     }),
 })
 
-export const { useGetStreamQuery } = StreamApi;
+export const { useGetStreamQuery, useLazyGetStreamQuery } = StreamApi;

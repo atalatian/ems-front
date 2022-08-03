@@ -18,10 +18,25 @@ const MyButton = (props) => {
             }).unwrap();
             dispatch(setToken(token));
             localStorage.setItem('token', token);
-            setError(false);
+            setError('');
             navigate('/dashboard/');
         }catch (e) {
-            setError(true);
+
+            if (!username){
+                setError('empty');
+            }
+
+            if (!password){
+                setError('empty');
+            }
+
+            if (!!username){
+                setError('wrong');
+            }
+
+            if (!!password){
+                setError('wrong');
+            }
         }
 
     }

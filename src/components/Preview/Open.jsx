@@ -8,32 +8,20 @@ import {AnimatePresence, motion} from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import {useGetStreamsQuery, useSetStreamMutation} from "../store/dataApi";
+import {Settings} from "@mui/icons-material";
 
 const Open = (props) => {
 
-    const {render, name, id} = props
+    const {render, id, disable} = props
     const navigate = useNavigate();
-    const { data = [] } = useGetStreamsQuery();
-    const streams = data
 
     const [setStream] = useSetStreamMutation();
 
     const myCss = css`
-      transform: translate(0, -100%);
+      transform: translate(-50%, -50%);
     `
     const handleClick = (id) => {
         navigate(`/dashboard/camera/${id}`)
-    }
-
-    const handleDisableClick = async () => {
-        const stream = streams.find((stream)=> stream.id === id);
-        const newStream = {...stream, is_active: false, is_streaming: false};
-
-        try {
-            await setStream(newStream);
-        }catch (e) {
-            console.log(e)
-        }
     }
 
 
@@ -48,10 +36,8 @@ const Open = (props) => {
                  alignItems={`flex-end`}
                  flexDirection={`column`}
                  transition={{ duration: 0.25 }}
-                 position={`absolute`} top={`100%`} left={`0%`}>
-                <Button onClick={handleDisableClick}
-                        sx={{ m: 1 }} variant={`contained`}>غیر فعال کردن</Button>
-                <IconButton aria-label="Open" size={`medium`}
+                 position={`absolute`} top={`50%`} left={`50%`}>
+                <IconButton disabled={disable} aria-label="Open" size={`medium`}
                             onClick={()=> handleClick(id)}
                             sx={{
                                 color: `#fff`,
@@ -59,7 +45,7 @@ const Open = (props) => {
                                 m: 1,
                                 '&:hover': { backgroundColor: `#1d1d1d` }
                             }}>
-                    <OpenInNewIcon/>
+                    <Settings sx={{ fontSize: `5rem` }}/>
                 </IconButton>
             </Box>}
         </AnimatePresence>

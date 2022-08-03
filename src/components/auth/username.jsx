@@ -18,6 +18,7 @@ const RTL = (props) => {
 
 const Username = (props) => {
     const {username, setUsername} = props;
+    const { error } = props;
 
     const handleChange = (event) => {
         setUsername(event.target.value);
@@ -25,8 +26,10 @@ const Username = (props) => {
 
     return(
         <RTL>
-            <Box sx={{ bgcolor: `#fff`, borderRadius: 1, p: 1, m: 1 }}>
-                <TextField id="outlined-basic" fullWidth value={username}
+            <Box sx={{ bgcolor: `#fff`, borderRadius: 1, p: 1, m: 1, }}>
+                <TextField id="outlined-basic" fullWidth
+                           value={username}
+                           error={!!error}
                            size={`small`} onChange={handleChange} dir={`rtl`}
                            label="نام کاربری" variant="outlined" />
             </Box>
