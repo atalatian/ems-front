@@ -6,7 +6,6 @@ import {Route, Routes} from "react-router-dom";
 import {useContext} from "react";
 import BarItemsContentConnectionContext from "../bar/BarItemsContentConnectionProvider";
 import Boundaries from "../Boundaries/Boundaries";
-import Additional from "../bar/Additional";
 import * as React from "react";
 
 
@@ -19,7 +18,7 @@ const Content = () => {
                 <Routes>
                     <Route path={`cameras`} element={<Previews/>}/>
                     <Route path={`recordings`} element={<Recordings {...connection.recordings}/>}/>
-                    <Route path={`camera/:id`} element={<Page {...connection.boundaries}/>}/>
+                    <Route path={`camera/:id`} element={<Page/>}/>
                     <Route path={`boundaries`} element={<Boundaries/>}/>
                 </Routes>
             </Box>

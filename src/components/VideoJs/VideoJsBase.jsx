@@ -13,7 +13,9 @@ export const VideoJsBase = (props) => {
                 onReady && onReady(player);
             });
 
-            player.controls(controls);
+            if (controls){
+                player.controls(controls)
+            }
 
             if (url){
                 player.src(player.src([{

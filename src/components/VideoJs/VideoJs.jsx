@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { VideoJsBase } from './VideoJsBase';
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 
 const VideoJs = (props) => {
 
@@ -14,7 +13,6 @@ const VideoJs = (props) => {
         fluid: true,
         muted: true,
         errorDisplay: false,
-        liveTracker: true,
         liveui: true,
     }
 
@@ -22,14 +20,21 @@ const VideoJs = (props) => {
         const player = playerRef.current;
 
         if (player){
-            player.controls = controls;
             player.src([{
                 src: `http://localhost:8000/${url}`,
                 type: "application/x-mpegURL"
             }]);
         }
 
-    }, [controls, url])
+    }, [url])
+
+    useEffect(()=>{
+        const player = playerRef.current;
+
+        if (player){
+            player.controls(controls)
+        }
+    }, [controls])
 
     useEffect(()=>{
         const player = playerRef.current;
@@ -40,10 +45,6 @@ const VideoJs = (props) => {
         }
 
     }, [isActive])
-
-    useEffect(()=>{
-        console.log(url)
-    }, [url])
 
     const handlePlayerReady = (player) => {
         playerRef.current = player;
