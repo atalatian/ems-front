@@ -9,13 +9,10 @@ const Video = (props) => {
     const { data = null } = useGetStreamQuery(id);
 
     return(
-        !!data
-            ?
-            <Box width={852}>
-                <VideoJs url={data} controls={controls} setHeight={setHeight} setWidth={setWidth}/>
-            </Box>
-            :
-            <div>Fetching...</div>
+        <Box width={852}>
+            <VideoJs url={data} controls={controls}
+                     isActive={true} setHeight={setHeight} setWidth={setWidth}/>
+        </Box>
     );
 }
 
